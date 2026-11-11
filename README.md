@@ -19,13 +19,15 @@ api/
   course.js       GET = public course · PUT = save (admin only)
   login.js        POST password → session token
   thumb.js        Vimeo thumbnail preview for the admin
-  _lib/           storage (Upstash/KV), auth, validation, seed content
+  _lib/           storage (Supabase / KV), auth, validation, seed content
+supabase-setup.sql  one-time SQL to create the storage table
 vercel.json       Vercel config (clean URLs, no-cache API)
 package.json
 ```
 
-The content lives in a free **Upstash Redis** database (a.k.a. Vercel KV). The
-learner site reads it; the admin panel writes it.
+The content lives in a free **Supabase** (Postgres) database. The learner site
+reads it; the admin panel writes it. (The code also accepts Upstash / Vercel KV
+as an alternative, if you ever switch.)
 
 ---
 
@@ -41,21 +43,26 @@ below is on Vercel's free tier.
 
 Framework preset: **Other**. No build command needed.
 
-### 2. Add the free database
-In your Vercel project → **Storage** → **Create Database** → choose
-**Upstash (Redis)** → connect it to this project. Vercel automatically adds the
-`KV_REST_API_URL` and `KV_REST_API_TOKEN` environment variables.
+### 2. Set up the Supabase database
+1. In [supabase.com](https://supabase.com) create a project (free tier).
+2. Open **SQL Editor → New query**, paste the contents of `supabase-setup.sql`
+   (in this folder), and click **Run**. This creates the storage table.
+3. Go to **Project Settings → API** and copy two values:
+   - **Project URL** (e.g. `https://xxxx.supabase.co`)
+   - the **`service_role`** key (under *Project API keys* — the secret one)
 
-*(Alternative: create a free database at upstash.com and add `UPSTASH_REDIS_REST_URL`
-and `UPSTASH_REDIS_REST_TOKEN` yourself — the code accepts either naming.)*
-
-### 3. Add two environment variables
+### 3. Add environment variables in Vercel
 Project → **Settings → Environment Variables**:
 
 | Name | Value |
 |------|-------|
 | `ADMIN_PASSWORD` | the password you'll use to log into the admin panel |
 | `AUTH_SECRET` | any long random string (e.g. from a password generator) |
+| `SUPABASE_URL` | your Supabase **Project URL** |
+| `SUPABASE_SERVICE_ROLE_KEY` | your Supabase **service_role** secret key |
+
+> The `service_role` key is powerful — keep it only in Vercel's env vars. It's
+> used server-side only and never reaches the browser.
 
 ### 4. Redeploy
 Project → **Deployments** → **Redeploy** (so the new env vars take effect).
