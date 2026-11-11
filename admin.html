@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bootcamp Admin</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+:root{
+  --bg:#eef3fc; --surface:#ffffff; --surface-2:#f4f7fe; --fg:#101d38; --muted:#5a6b8c; --faint:#8595b5;
+  --border:#dce5f5; --primary:#2563eb; --primary-strong:#1d4ed8; --primary-soft:#dbeafe; --accent:#0ea5e9;
+  --success:#15a34a; --success-soft:#dcfce7; --danger:#dc2626; --danger-soft:#fee2e2; --warn:#b45309; --warn-soft:#fef3c7;
+  --ring:rgba(37,99,235,.35); --shadow:0 1px 2px rgba(16,29,56,.06),0 10px 30px rgba(16,29,56,.08); --shadow-sm:0 1px 2px rgba(16,29,56,.06);
+  --font-display:"Space Grotesk","Inter",system-ui,sans-serif; --font-body:"Inter",system-ui,-apple-system,sans-serif;
+  --radius:14px; --radius-sm:10px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#070d1d; --surface:#101a30; --surface-2:#16223e; --fg:#e9effb; --muted:#9fb0d2; --faint:#6f80a4;
+  --border:#243356; --primary:#3b82f6; --primary-strong:#60a5fa; --primary-soft:#17294d; --accent:#38bdf8;
+  --success:#22c55e; --success-soft:#0e2a1b; --danger:#f87171; --danger-soft:#3a1618; --warn:#fbbf24; --warn-soft:#3a2a0e;
+  --ring:rgba(96,165,250,.42); --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 36px rgba(0,0,0,.42); --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  color-scheme:dark;
+}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:14.5px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);margin:0;line-height:1.2}
+img{max-width:100%}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:8px}
+
+/* header */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in srgb,var(--surface) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+  margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px))) 0 calc(-1*max(16px,env(safe-area-inset-right,0px)))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:31;background:var(--surface)}
+.topbar-in{max-width:960px;margin:0 auto;padding:11px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;color:#fff}
+.brand-mark svg{width:18px;height:18px}
+.brand b{font-family:var(--font-display);font-size:14.5px;display:block;line-height:1.1}
+.brand span{font-size:11.5px;color:var(--muted)}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.save-state{font-size:12.5px;display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.save-state .dot{width:8px;height:8px;border-radius:50%;background:var(--success)}
+.save-state.dirty{color:var(--warn)}
+.save-state.dirty .dot{background:var(--warn)}
+.save-state svg{width:14px;height:14px}
+
+.wrap{max-width:960px;margin:0 auto;padding-block:26px 80px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1px solid transparent;font-weight:600;font-size:13.5px;
+  padding:9px 15px;border-radius:10px;transition:.16s;text-decoration:none;white-space:nowrap;font-family:inherit;background:none;color:inherit}
+.btn svg{width:15px;height:15px}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 6px 16px -7px var(--primary)}
+.btn-primary:hover{background:var(--primary-strong)}
+.btn-ghost{background:var(--surface);border-color:var(--border);color:var(--fg)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary-strong)}
+.btn-danger{background:var(--danger-soft);color:var(--danger)}
+.btn-danger:hover{background:var(--danger);color:#fff}
+.btn[disabled]{opacity:.55;cursor:not-allowed;pointer-events:none}
+.btn-sm{padding:7px 11px;font-size:12.5px;border-radius:9px}
+.icon-btn{width:34px;height:34px;border:1px solid var(--border);background:var(--surface);border-radius:9px;display:grid;place-items:center;cursor:pointer;color:var(--muted)}
+.icon-btn:hover:not([disabled]){color:var(--primary-strong);border-color:var(--primary)}
+.icon-btn[disabled]{opacity:.4;cursor:not-allowed}
+.icon-btn svg{width:16px;height:16px}
+
+/* forms */
+label.field{display:block;margin-bottom:14px}
+.field .lab{display:block;font-size:12.5px;font-weight:600;color:var(--fg);margin-bottom:6px}
+.field .sub{font-weight:400;color:var(--faint);font-size:11.5px}
+input[type=text],input[type=password],textarea,select{width:100%;font-family:inherit;font-size:14px;color:var(--fg);
+  background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;transition:.15s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 3px var(--ring)}
+textarea{resize:vertical;min-height:90px;line-height:1.5}
+.hint{font-size:12px;color:var(--faint);margin-top:6px;display:flex;align-items:center;gap:6px}
+.hint .pill{display:inline-flex;align-items:center;gap:5px;font-weight:600;color:var(--primary-strong);background:var(--primary-soft);padding:2px 8px;border-radius:99px;font-size:11px}
+
+/* login */
+.login-card{max-width:400px;margin:8vh auto 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:30px 26px;box-shadow:var(--shadow)}
+.login-card .lgo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;color:#fff;margin:0 auto 16px}
+.login-card .lgo svg{width:26px;height:26px}
+.login-card h1{font-size:21px;text-align:center}
+.login-card p.s{text-align:center;color:var(--muted);font-size:13px;margin:6px 0 22px}
+.login-err{background:var(--danger-soft);color:var(--danger);font-size:13px;padding:9px 12px;border-radius:9px;margin-top:12px}
+
+/* panels */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);margin-bottom:22px}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.panel-h h2{font-size:16px}
+.panel-h .c{font-size:12.5px;color:var(--faint)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* lesson rows */
+.lesson-list{display:flex;flex-direction:column;gap:10px}
+.lrow{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;box-shadow:var(--shadow-sm)}
+.lrow-thumb{width:96px;height:56px;border-radius:9px;overflow:hidden;flex:none;background:var(--surface-2);position:relative;border:1px solid var(--border)}
+.lrow-thumb img{width:100%;height:100%;object-fit:cover}
+.lrow-num{position:absolute;top:4px;left:4px;font-size:10px;font-weight:700;background:rgba(10,16,34,.62);color:#fff;padding:2px 6px;border-radius:5px}
+.lrow-main{min-width:0;flex:1}
+.lrow-title{font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrow-meta{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
+.badge.vimeo{background:#e0f2fe;color:#0369a1;border-color:transparent}
+.badge.youtube{background:#fee2e2;color:#b91c1c;border-color:transparent}
+.badge.mp4{background:var(--primary-soft);color:var(--primary-strong);border-color:transparent}
+.badge.none{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+:root[data-theme="dark"] .badge.vimeo,@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .badge.vimeo{background:#0c2740;color:#7dd3fc}}
+.lrow-actions{display:flex;align-items:center;gap:6px;flex:none}
+
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty svg{width:40px;height:40px;color:var(--faint);margin-bottom:10px}
+
+/* modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(8,14,30,.55);backdrop-filter:blur(3px);z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);width:100%;max-width:620px;margin:auto;overflow:hidden}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+.modal-head h3{font-size:17px}
+.modal-head .x{width:32px;height:32px;border-radius:8px;border:0;background:var(--surface-2);color:var(--muted);cursor:pointer;font-size:19px;line-height:1}
+.modal-head .x:hover{color:var(--fg)}
+.modal-body{padding:22px;max-height:calc(100vh - 230px);overflow:auto}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 22px;border-top:1px solid var(--border);background:var(--surface-2)}
+
+.thumb-row{display:grid;grid-template-columns:140px 1fr;gap:14px;align-items:start;margin-bottom:14px}
+.thumb-prev{aspect-ratio:16/9;border-radius:9px;overflow:hidden;background:var(--surface-2);border:1px solid var(--border);display:grid;place-items:center}
+.thumb-prev img{width:100%;height:100%;object-fit:cover}
+.thumb-prev .ph{font-size:11px;color:var(--faint);text-align:center;padding:8px}
+
+/* resource editor */
+.res-editor{margin-top:6px;border-top:1px dashed var(--border);padding-top:16px}
+.res-editor-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.res-editor-head .t{font-size:12.5px;font-weight:600}
+.res-rows{display:flex;flex-direction:column;gap:9px}
+.res-row{display:grid;grid-template-columns:120px 1fr 1fr auto;gap:8px;align-items:center}
+.res-row select,.res-row input{padding:8px 10px;font-size:13px}
+.res-row .r-del{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-size:16px}
+.res-row .r-del:hover{color:var(--danger);border-color:var(--danger)}
+.res-empty{font-size:12.5px;color:var(--faint);padding:4px 0 8px}
+
+/* toast + banner */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140%);z-index:70;background:var(--fg);color:var(--bg);
+  padding:12px 18px;border-radius:11px;font-size:13.5px;font-weight:500;box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.9,.3,1.1);max-width:90vw}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--danger);color:#fff}
+.banner{display:flex;gap:10px;align-items:flex-start;background:var(--primary-soft);color:var(--primary-strong);border:1px solid color-mix(in srgb,var(--primary) 30%,var(--border));
+  border-radius:12px;padding:12px 15px;font-size:13px;margin-bottom:22px}
+.banner svg{width:17px;height:17px;flex:none;margin-top:1px}
+
+@media (max-width:640px){
+  .grid2{grid-template-columns:1fr}
+  .thumb-row{grid-template-columns:1fr}
+  .res-row{grid-template-columns:1fr 1fr;gap:7px}
+  .res-row .r-type{grid-column:1/2}.res-row .r-del{grid-column:2/3;justify-self:end}
+  .res-row .r-label,.res-row .r-url{grid-column:1/3}
+  .lrow{flex-wrap:wrap}.lrow-actions{width:100%;justify-content:flex-end}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M4 20h2M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z"/></svg></span>
+      <div><b>Bootcamp Admin</b><span>Manage your course</span></div>
+    </div>
+    <div class="top-actions" id="top-actions" hidden>
+      <span class="save-state" id="save-state"><span class="dot"></span><span id="save-state-txt">All changes published</span></span>
+      <a class="btn btn-ghost btn-sm" href="index.html" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg> Live site</a>
+      <button class="btn btn-primary btn-sm" id="publish-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg> Save &amp; publish</button>
+      <button class="btn btn-ghost btn-sm" id="logout-btn">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- LOGIN -->
+  <section id="login-view">
+    <div class="login-card">
+      <div class="lgo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="11" width="15" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+      <h1>Admin sign in</h1>
+      <p class="s">Enter your admin password to manage lessons.</p>
+      <form id="login-form">
+        <label class="field"><span class="lab">Password</span>
+          <input type="password" id="login-pass" autocomplete="current-password" required></label>
+        <button class="btn btn-primary" id="login-btn" style="width:100%;justify-content:center">Sign in</button>
+      </form>
+      <div class="login-err" id="login-err" hidden></div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="dash-view" hidden>
+    <div class="banner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+      <div>Edits here are saved to a draft. Click <strong>Save &amp; publish</strong> (top right) to make them live for learners.</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h"><h2>Course details</h2></div>
+      <div class="grid2">
+        <label class="field"><span class="lab">Course name</span><input type="text" id="c-name"></label>
+        <label class="field"><span class="lab">Tagline <span class="sub">short line under the title</span></span><input type="text" id="c-tagline"></label>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">
+        <h2>Lessons <span class="c" id="lesson-count"></span></h2>
+        <button class="btn btn-primary btn-sm" id="add-lesson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add lesson</button>
+      </div>
+      <div class="lesson-list" id="lesson-list"></div>
+    </div>
+  </section>
+</main>
+
+<div id="editor-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   Bootcamp Admin  — manage course content, publish to /api/course
+   ============================================================ */
+var TOKEN_KEY = "dbb_admin_token";
+var token = null;
+try{ token = localStorage.getItem(TOKEN_KEY); }catch(e){}
+
+var course = null;     // working draft
+var dirty = false;
+var editingIndex = -1; // index being edited, or -1 for a new lesson
+
+var $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+/* ---- video type detection (mirror of the public site) ---- */
+function detectType(url){
+  var s = String(url||"").trim();
+  if(!s) return "none";
+  if(/youtube\.com|youtu\.be/.test(s) || /^[A-Za-z0-9_-]{11}$/.test(s)) return "youtube";
+  if(/vimeo\.com\/\d+/.test(s) || /^\d+$/.test(s)) return "vimeo";
+  return "mp4";
+}
+function ytId(url){
+  var m = String(url||"").match(/(?:youtube\.com\/(?:watch\?.*?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  if(m) return m[1];
+  if(/^[A-Za-z0-9_-]{11}$/.test(String(url||"").trim())) return String(url).trim();
+  return null;
+}
+function thumbFor(v, i){
+  if(v && v.thumbnail) return v.thumbnail;
+  var t = detectType(v && v.video);
+  if(t === "youtube"){ var id = ytId(v.video); if(id) return "https://img.youtube.com/vi/"+id+"/hqdefault.jpg"; }
+  return null; // vimeo/mp4/none → placeholder in UI
+}
+
+/* ============================================================
+   AUTH + LOAD
+   ============================================================ */
+$("login-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  doLogin($("login-pass").value);
+});
+async function doLogin(pw){
+  $("login-btn").disabled = true;
+  $("login-err").hidden = true;
+  try{
+    var r = await fetch("/api/login", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ password: pw }) });
+    var data = {};
+    try{ data = await r.json(); }catch(e){}
+    if(r.ok && data.token){
+      token = data.token;
+      try{ localStorage.setItem(TOKEN_KEY, token); }catch(e){}
+      await enterDashboard();
+    } else {
+      loginError(data.error || "Login failed.");
+    }
+  }catch(err){
+    loginError("Couldn't reach the server. The admin panel works once the site is deployed on Vercel (or running locally with `vercel dev`).");
+  }
+  $("login-btn").disabled = false;
+}
+function loginError(msg){ var e = $("login-err"); e.textContent = msg; e.hidden = false; }
+
+function logout(msg){
+  token = null; try{ localStorage.removeItem(TOKEN_KEY); }catch(e){}
+  $("dash-view").hidden = true; $("top-actions").hidden = true; $("login-view").hidden = false;
+  if(msg) loginError(msg);
+}
+$("logout-btn").onclick = function(){
+  if(dirty && !confirmDiscard()) return;
+  logout();
+};
+
+async function enterDashboard(){
+  $("login-view").hidden = true;
+  $("dash-view").hidden = false;
+  $("top-actions").hidden = false;
+  await loadCourse();
+  renderDashboard();
+}
+async function loadCourse(){
+  try{
+    var r = await fetch("/api/course", { cache:"no-store" });
+    if(r.ok){ course = await r.json(); }
+  }catch(e){}
+  if(!course || !Array.isArray(course.videos)) course = { name:"Digital Business Bootcamp", tagline:"", videos:[] };
+  dirty = false; updateSaveState();
+}
+
+/* ============================================================
+   DASHBOARD RENDER
+   ============================================================ */
+function renderDashboard(){
+  $("c-name").value = course.name || "";
+  $("c-tagline").value = course.tagline || "";
+  $("lesson-count").textContent = "(" + course.videos.length + ")";
+  renderLessons();
+}
+$("c-name").addEventListener("input", function(){ course.name = $("c-name").value; markDirty(); });
+$("c-tagline").addEventListener("input", function(){ course.tagline = $("c-tagline").value; markDirty(); });
+
+function renderLessons(){
+  var list = $("lesson-list");
+  if(!course.videos.length){
+    list.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3V9Z"/></svg><div>No lessons yet. Click <strong>Add lesson</strong> to create your first one.</div></div>';
+    return;
+  }
+  list.innerHTML = course.videos.map(function(v, i){
+    var t = detectType(v.video);
+    var typeLabel = { youtube:"YouTube", vimeo:"Vimeo", mp4:"Video file", none:"No video" }[t];
+    var thumb = thumbFor(v, i);
+    var thumbHtml = thumb ? '<img src="'+esc(thumb)+'" alt="" loading="lazy">' : '<div style="width:100%;height:100%;background:linear-gradient(135deg,#1e3a8a,#2563eb)"></div>';
+    var nres = (v.resources||[]).length;
+    return '<div class="lrow" data-i="'+i+'">'+
+        '<div class="lrow-thumb"><span class="lrow-num">'+(i+1)+'</span>'+thumbHtml+'</div>'+
+        '<div class="lrow-main">'+
+          '<div class="lrow-title">'+esc(v.title || "Untitled lesson")+'</div>'+
+          '<div class="lrow-meta"><span class="badge '+t+'">'+typeLabel+'</span><span>'+nres+' resource'+(nres===1?"":"s")+'</span></div>'+
+        '</div>'+
+        '<div class="lrow-actions">'+
+          '<button class="icon-btn" data-act="up" '+(i===0?"disabled":"")+' title="Move up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>'+
+          '<button class="icon-btn" data-act="down" '+(i===course.videos.length-1?"disabled":"")+' title="Move down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>'+
+          '<button class="btn btn-ghost btn-sm" data-act="edit">Edit</button>'+
+          '<button class="icon-btn" data-act="del" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/></svg></button>'+
+        '</div>'+
+      '</div>';
+  }).join("");
+  list.querySelectorAll(".lrow").forEach(function(row){
+    var i = parseInt(row.dataset.i, 10);
+    row.querySelector('[data-act="up"]').onclick = function(){ moveLesson(i, -1); };
+    row.querySelector('[data-act="down"]').onclick = function(){ moveLesson(i, 1); };
+    row.querySelector('[data-act="edit"]').onclick = function(){ openEditor(i); };
+    row.querySelector('[data-act="del"]').onclick = function(){ deleteLesson(i); };
+  });
+}
+
+function moveLesson(i, dir){
+  var j = i + dir;
+  if(j < 0 || j >= course.videos.length) return;
+  var tmp = course.videos[i]; course.videos[i] = course.videos[j]; course.videos[j] = tmp;
+  markDirty(); renderLessons();
+}
+function deleteLesson(i){
+  var name = course.videos[i].title || "this lesson";
+  if(!window.confirm('Delete "' + name + '"?\n\nThis removes it from the draft. It becomes permanent when you Save & publish.')) return;
+  course.videos.splice(i, 1);
+  markDirty(); $("lesson-count").textContent = "(" + course.videos.length + ")"; renderLessons();
+}
+$("add-lesson").onclick = function(){ openEditor(-1); };
+
+/* ============================================================
+   LESSON EDITOR (modal)
+   ============================================================ */
+function newLessonId(){ return "lesson-" + Math.random().toString(36).slice(2,8) + Date.now().toString(36).slice(-3); }
+
+function openEditor(index){
+  editingIndex = index;
+  var v = (index >= 0) ? course.videos[index] : { id:newLessonId(), title:"", video:"", description:"", thumbnail:"", resources:[] };
+  var root = $("editor-root");
+  root.innerHTML =
+    '<div class="modal-backdrop" id="ed-backdrop">'+
+      '<div class="modal" role="dialog" aria-modal="true">'+
+        '<div class="modal-head"><h3>'+(index>=0 ? "Edit lesson" : "Add lesson")+'</h3><button class="x" id="ed-x" aria-label="Close">&times;</button></div>'+
+        '<div class="modal-body">'+
+          '<label class="field"><span class="lab">Lesson title</span><input type="text" id="f-title" placeholder="e.g. Finding Your Business Idea"></label>'+
+          '<label class="field"><span class="lab">Video link <span class="sub">Vimeo, YouTube, or an .mp4 link</span></span><input type="text" id="f-video" placeholder="https://vimeo.com/123456789"></label>'+
+          '<div class="hint" id="f-type-hint"></div>'+
+          '<div class="thumb-row" style="margin-top:14px">'+
+            '<div class="thumb-prev" id="f-thumb-prev"><div class="ph">Thumbnail preview</div></div>'+
+            '<label class="field" style="margin:0"><span class="lab">Custom thumbnail URL <span class="sub">optional — Vimeo fills in automatically</span></span><input type="text" id="f-thumb" placeholder="https://… (leave blank to auto-use the video thumbnail)"></label>'+
+          '</div>'+
+          '<label class="field"><span class="lab">Description <span class="sub">a blank line starts a new paragraph</span></span><textarea id="f-desc" rows="5" placeholder="What this lesson covers…"></textarea></label>'+
+          '<div class="res-editor">'+
+            '<div class="res-editor-head"><span class="t">Resources &amp; links</span><button class="btn btn-ghost btn-sm" id="add-res"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add resource</button></div>'+
+            '<div class="res-rows" id="res-rows"></div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="modal-foot"><button class="btn btn-ghost" id="ed-cancel">Cancel</button><button class="btn btn-primary" id="ed-save">Save lesson</button></div>'+
+      '</div>'+
+    '</div>';
+
+  $("f-title").value = v.title || "";
+  $("f-video").value = v.video || "";
+  $("f-thumb").value = v.thumbnail || "";
+  $("f-desc").value = v.description || "";
+  renderResRows(v.resources || []);
+
+  var onMeta = function(){ updateTypeHint(); updateThumbPreview(); };
+  $("f-video").addEventListener("input", debounce(onMeta, 350));
+  $("f-thumb").addEventListener("input", debounce(updateThumbPreview, 350));
+  $("add-res").onclick = function(){ addResRow({ type:"link", label:"", url:"" }); };
+  $("ed-x").onclick = closeEditor;
+  $("ed-cancel").onclick = closeEditor;
+  $("ed-backdrop").addEventListener("mousedown", function(e){ if(e.target === $("ed-backdrop")) closeEditor(); });
+  $("ed-save").onclick = saveLesson;
+  updateTypeHint(); updateThumbPreview();
+  $("f-title").focus();
+}
+function closeEditor(){ $("editor-root").innerHTML = ""; editingIndex = -1; }
+
+function updateTypeHint(){
+  var t = detectType($("f-video").value);
+  var map = { youtube:"YouTube video", vimeo:"Vimeo video", mp4:"Direct video file", none:"No link yet" };
+  var el = $("f-type-hint"); if(!el) return;
+  el.innerHTML = '<span class="pill">'+map[t]+'</span> completion tracking works for all three.';
+}
+var _thumbReq = 0;
+async function updateThumbPreview(){
+  var prev = $("f-thumb-prev"); if(!prev) return;
+  var custom = $("f-thumb").value.trim();
+  var video = $("f-video").value.trim();
+  var url = null;
+  if(custom){ url = custom; }
+  else {
+    var t = detectType(video);
+    if(t === "youtube"){ var id = ytId(video); if(id) url = "https://img.youtube.com/vi/"+id+"/hqdefault.jpg"; }
+    else if(t === "vimeo"){
+      var reqId = ++_thumbReq;
+      try{
+        var r = await fetch("/api/thumb?video=" + encodeURIComponent(video));
+        if(r.ok){ var j = await r.json(); if(reqId === _thumbReq && j.thumbnail){ prev.innerHTML = '<img src="'+esc(j.thumbnail)+'" alt="">'; return; } }
+      }catch(e){}
+      if(reqId === _thumbReq) prev.innerHTML = '<div class="ph">Vimeo thumbnail will be added when you publish</div>';
+      return;
+    }
+  }
+  prev.innerHTML = url ? '<img src="'+esc(url)+'" alt="" onerror="this.parentNode.innerHTML=\'<div class=&quot;ph&quot;>Could not load image</div>\'">' : '<div class="ph">Thumbnail preview</div>';
+}
+
+/* resource rows */
+function renderResRows(resources){
+  var box = $("res-rows"); box.innerHTML = "";
+  if(!resources.length){ box.innerHTML = '<div class="res-empty" id="res-empty">No resources yet — add prompts, documents, or links for this lesson.</div>'; }
+  resources.forEach(addResRow);
+}
+function addResRow(r){
+  r = r || { type:"link", label:"", url:"" };
+  var box = $("res-rows");
+  var empty = $("res-empty"); if(empty) empty.remove();
+  var row = document.createElement("div");
+  row.className = "res-row";
+  row.innerHTML =
+    '<select class="r-type">'+
+      ['prompt','document','reference','link'].map(function(t){ return '<option value="'+t+'"'+(r.type===t?" selected":"")+'>'+t.charAt(0).toUpperCase()+t.slice(1)+'</option>'; }).join("")+
+    '</select>'+
+    '<input type="text" class="r-label" placeholder="Label (e.g. Workbook PDF)">'+
+    '<input type="text" class="r-url" placeholder="https://…">'+
+    '<button class="r-del" title="Remove" aria-label="Remove resource">&times;</button>';
+  row.querySelector(".r-label").value = r.label || "";
+  row.querySelector(".r-url").value = r.url || "";
+  row.querySelector(".r-del").onclick = function(){
+    row.remove();
+    if(!$("res-rows").children.length) renderResRows([]);
+  };
+  box.appendChild(row);
+}
+function collectResources(){
+  var rows = $("res-rows").querySelectorAll(".res-row");
+  var out = [];
+  rows.forEach(function(row){
+    var label = row.querySelector(".r-label").value.trim();
+    var url = row.querySelector(".r-url").value.trim();
+    var type = row.querySelector(".r-type").value;
+    if(label || url) out.push({ type:type, label:label, url:url });
+  });
+  return out;
+}
+
+function saveLesson(){
+  var title = $("f-title").value.trim();
+  if(!title){ toast("Please give the lesson a title.", true); $("f-title").focus(); return; }
+  var lesson = {
+    id: (editingIndex >= 0 ? course.videos[editingIndex].id : newLessonId()),
+    title: title,
+    video: $("f-video").value.trim(),
+    description: $("f-desc").value,
+    thumbnail: $("f-thumb").value.trim(),
+    resources: collectResources()
+  };
+  if(editingIndex >= 0) course.videos[editingIndex] = lesson;
+  else course.videos.push(lesson);
+  markDirty();
+  $("lesson-count").textContent = "(" + course.videos.length + ")";
+  renderLessons();
+  closeEditor();
+  toast(editingIndex >= 0 ? "Lesson updated in draft." : "Lesson added to draft.");
+}
+
+/* ============================================================
+   PUBLISH
+   ============================================================ */
+function markDirty(){ dirty = true; updateSaveState(); }
+function updateSaveState(){
+  var el = $("save-state"), txt = $("save-state-txt");
+  if(!el) return;
+  if(dirty){ el.classList.add("dirty"); txt.textContent = "Unpublished changes"; }
+  else { el.classList.remove("dirty"); txt.textContent = "All changes published"; }
+}
+function confirmDiscard(){ return window.confirm("You have unpublished changes. Leave without publishing them?"); }
+
+$("publish-btn").onclick = publish;
+async function publish(){
+  if(!token){ logout("Please log in again."); return; }
+  var btn = $("publish-btn"); btn.disabled = true;
+  try{
+    var r = await fetch("/api/course", { method:"PUT", headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+token }, body: JSON.stringify(course) });
+    if(r.status === 401){ btn.disabled = false; logout("Your session expired. Please log in again."); return; }
+    var data = {};
+    try{ data = await r.json(); }catch(e){}
+    if(r.ok){
+      course = data; dirty = false; updateSaveState(); renderDashboard();
+      toast("Published! Your changes are now live.");
+    } else {
+      toast(data.error || "Could not publish. Please try again.", true);
+    }
+  }catch(err){
+    toast("Network error while publishing.", true);
+  }
+  btn.disabled = false;
+}
+
+window.addEventListener("beforeunload", function(e){
+  if(dirty){ e.preventDefault(); e.returnValue = ""; }
+});
+
+/* ============================================================
+   UTIL
+   ============================================================ */
+function debounce(fn, ms){ var t; return function(){ var a = arguments, c = this; clearTimeout(t); t = setTimeout(function(){ fn.apply(c, a); }, ms); }; }
+var toastT;
+function toast(msg, err){
+  var t = $("toast"); t.textContent = msg; t.classList.toggle("err", !!err); t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(function(){ t.classList.remove("show"); }, 3000);
+}
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+if(token){ enterDashboard(); }
+else { $("login-view").hidden = false; }
+</script>
+</body>
+</html>

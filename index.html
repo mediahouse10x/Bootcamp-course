@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Digital Business Bootcamp</title>
+<meta name="description" content="A step-by-step, video-based learning journey. Watch each lesson, unlock the next, and finish your bootcamp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* ===========================================================
+   Digital Business Bootcamp — blue learning platform
+   Layout: sticky header + 3 views (start / lesson / complete);
+   lesson view = sticky lesson rail + main (player, notes, resources, status)
+   =========================================================== */
+:root{
+  /* palette — light (blue) */
+  --bg:#eef3fc;
+  --surface:#ffffff;
+  --surface-2:#f4f7fe;
+  --fg:#101d38;
+  --muted:#5a6b8c;
+  --faint:#8595b5;
+  --border:#dce5f5;
+  --primary:#2563eb;
+  --primary-strong:#1d4ed8;
+  --primary-soft:#dbeafe;
+  --accent:#0ea5e9;
+  --success:#15a34a;
+  --success-soft:#dcfce7;
+  --lock:#9aa8c4;
+  --ring:rgba(37,99,235,.35);
+  --shadow:0 1px 2px rgba(16,29,56,.06), 0 10px 30px rgba(16,29,56,.08);
+  --shadow-sm:0 1px 2px rgba(16,29,56,.06);
+  /* type */
+  --font-display:"Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body:"Inter", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --radius:16px;
+  --radius-sm:11px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#070d1d;
+    --surface:#101a30;
+    --surface-2:#16223e;
+    --fg:#e9effb;
+    --muted:#9fb0d2;
+    --faint:#6f80a4;
+    --border:#243356;
+    --primary:#3b82f6;
+    --primary-strong:#60a5fa;
+    --primary-soft:#17294d;
+    --accent:#38bdf8;
+    --success:#22c55e;
+    --success-soft:#0e2a1b;
+    --lock:#53628a;
+    --ring:rgba(96,165,250,.42);
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 36px rgba(0,0,0,.42);
+    --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#070d1d;
+  --surface:#101a30;
+  --surface-2:#16223e;
+  --fg:#e9effb;
+  --muted:#9fb0d2;
+  --faint:#6f80a4;
+  --border:#243356;
+  --primary:#3b82f6;
+  --primary-strong:#60a5fa;
+  --primary-soft:#17294d;
+  --accent:#38bdf8;
+  --success:#22c55e;
+  --success-soft:#0e2a1b;
+  --lock:#53628a;
+  --ring:rgba(96,165,250,.42);
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 36px rgba(0,0,0,.42);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:var(--font-body);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+}
+img{max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.2;margin:0}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px;border-radius:8px}
+
+/* ---------- header ---------- */
+.site-header{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  background:color-mix(in srgb, var(--surface) 86%, transparent);
+  backdrop-filter:saturate(1.3) blur(10px);
+  border-bottom:1px solid var(--border);
+  margin:0 calc(-1 * max(16px, env(safe-area-inset-left,0px))) 0 calc(-1 * max(16px, env(safe-area-inset-right,0px)));
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--surface)}
+.header-inner{
+  max-width:1120px;margin:0 auto;
+  padding:12px max(16px, env(safe-area-inset-left,0px));
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:11px;background:none;border:0;padding:0;cursor:pointer;color:var(--fg)}
+.brand-mark{
+  width:38px;height:38px;border-radius:11px;flex:none;
+  background:linear-gradient(135deg,var(--primary),var(--accent));
+  display:grid;place-items:center;color:#fff;box-shadow:var(--shadow-sm);
+}
+.brand-mark svg{width:20px;height:20px}
+.brand-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.brand-name{font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:.2px}
+.brand-sub{font-size:11.5px;color:var(--muted);letter-spacing:.3px}
+.header-progress{margin-left:auto;display:flex;align-items:center;gap:12px}
+.hp-text{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hp-text b{color:var(--fg);font-weight:600}
+.hp-track{width:120px;height:7px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
+.hp-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .5s cubic-bezier(.3,.7,.3,1)}
+.icon-btn{
+  width:38px;height:38px;border-radius:10px;flex:none;cursor:pointer;
+  background:var(--surface-2);border:1px solid var(--border);color:var(--muted);
+  display:grid;place-items:center;transition:.18s;
+}
+.icon-btn:hover{color:var(--fg);border-color:var(--primary)}
+.icon-btn svg{width:18px;height:18px}
+.theme-dark-only{display:none}
+:root[data-theme="dark"] .theme-light-only{display:none}
+:root[data-theme="dark"] .theme-dark-only{display:block}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .theme-light-only{display:none}
+  :root:not([data-theme="light"]) .theme-dark-only{display:block}
+}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 64px}
+.view{animation:fade .35s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- start view ---------- */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center}
+.hero-copy .eyebrow{
+  display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--primary-strong);background:var(--primary-soft);
+  padding:6px 12px;border-radius:99px;margin-bottom:18px;
+}
+.hero-copy .eyebrow svg{width:14px;height:14px;flex:none}
+.hero h1{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.5px}
+.hero .lede{color:var(--muted);font-size:16.5px;margin:16px 0 26px;max-width:46ch}
+.hero-meta{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:28px}
+.hero-meta .m{display:flex;flex-direction:column}
+.hero-meta .m b{font-family:var(--font-display);font-size:20px}
+.hero-meta .m span{font-size:12.5px;color:var(--faint);letter-spacing:.3px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+.thumb{
+  position:relative;border-radius:var(--radius);overflow:hidden;cursor:pointer;
+  box-shadow:var(--shadow);border:1px solid var(--border);aspect-ratio:16/9;background:var(--surface-2);
+  display:block;width:100%;padding:0;
+}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .play-badge{
+  position:absolute;inset:0;display:grid;place-items:center;transition:.25s;
+}
+.thumb .play-badge i{
+  width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.92);
+  display:grid;place-items:center;box-shadow:0 10px 30px rgba(16,29,56,.3);transition:.25s;
+}
+.thumb .play-badge i svg{width:28px;height:28px;margin-left:4px;color:var(--primary-strong)}
+.thumb:hover .play-badge i{transform:scale(1.07);background:#fff}
+.thumb .tcap{position:absolute;left:0;right:0;bottom:0;padding:16px 18px;color:#fff;
+  background:linear-gradient(to top,rgba(10,16,34,.78),transparent);font-size:12.5px;letter-spacing:.3px}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:9px;cursor:pointer;border:1px solid transparent;
+  font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:12px;transition:.18s;
+  text-decoration:none;white-space:nowrap;
+}
+.btn svg{width:17px;height:17px}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 6px 18px -6px var(--primary)}
+.btn-primary:hover{background:var(--primary-strong);transform:translateY(-1px)}
+.btn-ghost{background:var(--surface);color:var(--fg);border-color:var(--border)}
+.btn-ghost:hover{border-color:var(--primary);color:var(--primary-strong)}
+.btn[disabled],.btn.is-disabled{opacity:.5;cursor:not-allowed;pointer-events:none;box-shadow:none}
+.badge-done{display:inline-flex;align-items:center;gap:7px;color:var(--success);font-weight:600;font-size:13.5px}
+.badge-done svg{width:17px;height:17px}
+
+/* curriculum preview on start */
+.curriculum{margin-top:52px}
+.section-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
+.section-h h2{font-size:19px;font-weight:600}
+.section-h span{font-size:12.5px;color:var(--faint);letter-spacing:.3px}
+.lesson-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:16px}
+.lcard{
+  text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;transition:.18s;padding:0;color:inherit;box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;
+}
+.lcard:hover:not(.locked){transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--primary)}
+.lcard.locked{cursor:not-allowed;opacity:.72}
+.lcard-thumb{position:relative;aspect-ratio:16/9;background:var(--surface-2)}
+.lcard-thumb img{width:100%;height:100%;object-fit:cover}
+.lcard-tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:600;letter-spacing:.4px;
+  background:rgba(10,16,34,.6);color:#fff;padding:4px 9px;border-radius:7px;backdrop-filter:blur(4px)}
+.lcard-state{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(10,16,34,.55);color:#fff;backdrop-filter:blur(4px)}
+.lcard-state.done{background:var(--success);color:#fff}
+.lcard-state svg{width:15px;height:15px}
+.lcard-body{padding:14px 16px 16px}
+.lcard-body h3{font-size:15px;font-weight:600;margin-bottom:5px}
+.lcard-body p{margin:0;font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ---------- lesson view ---------- */
+.crumb{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.crumb button{background:none;border:0;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:4px 0}
+.crumb button:hover{color:var(--primary-strong)}
+.crumb svg{width:15px;height:15px}
+.crumb .sep{color:var(--faint)}
+.crumb .cur{color:var(--fg);font-weight:600}
+
+.lesson-layout{display:grid;grid-template-columns:288px 1fr;gap:28px;align-items:start}
+
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 80px);background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px;box-shadow:var(--shadow-sm)}
+.rail-h{padding:10px 12px 12px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.rail-h .t{font-family:var(--font-display);font-weight:600;font-size:14px}
+.rail-h .s{font-size:12px;color:var(--faint)}
+.rail-list{display:flex;flex-direction:column;gap:3px;max-height:none}
+.rail-item{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:11px;cursor:pointer;
+  background:none;border:0;text-align:left;color:inherit;width:100%;transition:.14s}
+.rail-item:hover:not(.locked){background:var(--surface-2)}
+.rail-item.active{background:var(--primary-soft)}
+.rail-item.active .ri-title{color:var(--primary-strong)}
+.rail-item.locked{cursor:not-allowed;color:var(--faint)}
+.ri-badge{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;
+  background:var(--surface-2);border:1px solid var(--border);font-weight:600;font-size:13px;color:var(--muted)}
+.ri-badge svg{width:16px;height:16px}
+.ri-badge.done{background:var(--success);border-color:var(--success);color:#fff}
+.ri-badge.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.ri-badge.locked{background:transparent}
+.ri-main{min-width:0;flex:1;display:flex;flex-direction:column}
+.ri-title{font-size:13.5px;font-weight:500;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ri-sub{font-size:11.5px;color:var(--faint)}
+
+.lesson-main{min-width:0}
+.player-shell{position:relative;background:#05070f;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+  border:1px solid var(--border);aspect-ratio:16/9}
+.player-shell video{width:100%;height:100%;display:block;background:#05070f}
+.player-shell iframe{position:absolute;inset:0;width:100%!important;height:100%!important;border:0}
+.player-shell > div{position:absolute;inset:0;width:100%;height:100%}
+.player-loading{position:absolute;inset:0;display:grid;place-items:center;gap:12px;
+  color:#aebbd6;font-size:13.5px;letter-spacing:.3px;z-index:1;pointer-events:none;background:#05070f}
+.player-loading::before{content:"";width:26px;height:26px;border-radius:50%;
+  border:3px solid rgba(255,255,255,.18);border-top-color:#60a5fa;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lesson-head{margin:22px 0 2px}
+.lesson-kicker{font-size:12px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--primary-strong)}
+.lesson-head h1{font-size:clamp(22px,3.4vw,30px);font-weight:700;margin-top:6px;letter-spacing:-.3px}
+
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px 22px;margin-top:20px;box-shadow:var(--shadow-sm)}
+.panel-label{font-size:12px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--faint);margin-bottom:12px}
+.panel p{margin:0 0 12px;color:var(--muted)}
+.panel p:last-child{margin-bottom:0}
+.panel p strong{color:var(--fg)}
+
+/* resources */
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.res{display:flex;align-items:center;gap:13px;padding:13px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);
+  text-decoration:none;color:inherit;background:var(--surface-2);transition:.15s}
+.res:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.res-ico{width:38px;height:38px;border-radius:10px;flex:none;display:grid;place-items:center}
+.res-ico svg{width:19px;height:19px}
+.res-prompt{background:var(--primary-soft);color:var(--primary-strong)}
+.res-document{background:var(--success-soft);color:var(--success)}
+.res-reference{background:#f0e9ff;color:#7c3aed}
+.res-link{background:var(--surface);color:var(--accent);border:1px solid var(--border)}
+:root[data-theme="dark"] .res-reference{background:#241a44;color:#b794ff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .res-reference{background:#241a44;color:#b794ff}}
+.res-body{min-width:0;flex:1;display:flex;flex-direction:column}
+.res-label{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.res-type{font-size:11.5px;color:var(--faint);letter-spacing:.3px}
+.res-ext{color:var(--faint);flex:none}
+.res-ext svg{width:15px;height:15px}
+
+/* completion status */
+.completion{display:flex;align-items:flex-start;gap:15px;padding:20px 22px;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--surface);margin-top:20px;box-shadow:var(--shadow-sm);transition:.3s}
+.completion.is-done{background:var(--success-soft);border-color:color-mix(in srgb,var(--success) 40%,var(--border))}
+.comp-ico{width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;
+  background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+.completion.is-done .comp-ico{background:var(--success);color:#fff;border-color:var(--success)}
+.comp-ico svg{width:24px;height:24px}
+.comp-body{flex:1;min-width:0}
+.comp-title{font-family:var(--font-display);font-weight:600;font-size:16px}
+.completion.is-done .comp-title{color:var(--success)}
+.comp-sub{font-size:13.5px;color:var(--muted);margin-top:3px}
+.cov{display:flex;align-items:center;gap:12px;margin-top:14px}
+.cov-track{flex:1;height:9px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);overflow:hidden}
+.cov-bar{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .35s ease}
+.cov-pct{font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+
+/* lesson nav */
+.lesson-nav{display:flex;align-items:center;gap:14px;margin-top:26px;flex-wrap:wrap}
+.lesson-nav .spacer{flex:1}
+.next-hint{font-size:12.5px;color:var(--faint);display:flex;align-items:center;gap:6px}
+.next-hint svg{width:14px;height:14px}
+
+/* ---------- complete view ---------- */
+.complete-wrap{max-width:680px;margin:10px auto 0;text-align:center}
+.seal{width:118px;height:118px;border-radius:50%;margin:0 auto 26px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;box-shadow:0 18px 44px -12px var(--primary);
+  position:relative;animation:pop .6s cubic-bezier(.2,.9,.3,1.3) both}
+.seal::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px dashed color-mix(in srgb,var(--primary) 45%,transparent)}
+.seal svg{width:56px;height:56px}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.complete-wrap .eyebrow{font-size:12.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--primary-strong)}
+.complete-wrap h1{font-size:clamp(26px,4.6vw,40px);font-weight:700;margin:12px 0 14px;letter-spacing:-.4px}
+.complete-wrap .msg{font-size:17px;color:var(--muted);max-width:52ch;margin:0 auto 10px}
+.cert{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin:30px 0;box-shadow:var(--shadow);text-align:left}
+.cert-top{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border);padding-bottom:16px;margin-bottom:16px;flex-wrap:wrap}
+.cert-top .ct-l{font-family:var(--font-display);font-weight:700;font-size:16px}
+.cert-top .ct-r{font-size:12.5px;color:var(--faint)}
+.cert-list{display:flex;flex-direction:column;gap:9px}
+.cert-row{display:flex;align-items:center;gap:11px;font-size:14px}
+.cert-row svg{width:19px;height:19px;color:var(--success);flex:none}
+.cert-row span{color:var(--muted)}
+.complete-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* ---------- toast + confetti ---------- */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(120%);z-index:60;
+  background:var(--fg);color:var(--bg);padding:13px 20px;border-radius:12px;font-size:14px;font-weight:500;
+  box-shadow:var(--shadow);max-width:90vw;transition:transform .4s cubic-bezier(.2,.9,.3,1.1);pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+#confetti i{position:absolute;top:-24px;width:9px;height:15px;border-radius:2px;opacity:.9;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(680deg);opacity:.2}}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:26px}
+  .hero-order-thumb{order:-1}
+  .lesson-layout{grid-template-columns:1fr}
+  .rail{position:static;order:2}
+}
+@media (max-width:560px){
+  .wrap{padding-block:20px 48px}
+  .header-progress{width:100%;margin-left:0;order:3;justify-content:space-between}
+  .hp-track{flex:1;width:auto;max-width:200px}
+  .panel{padding:18px 16px}
+  .btn{flex:1;justify-content:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <button class="brand" id="brand-btn" aria-label="Go to start">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5Z" fill="currentColor"/></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">Digital Business Bootcamp</span>
+        <span class="brand-sub">Video learning journey</span>
+      </span>
+    </button>
+    <div class="header-progress">
+      <span class="hp-text"><b id="hp-done">0</b> / <span id="hp-total">0</span> completed</span>
+      <span class="hp-track"><span class="hp-fill" id="hp-fill"></span></span>
+    </div>
+    <button class="icon-btn" id="theme-btn" aria-label="Toggle light or dark theme" title="Toggle theme">
+      <svg class="theme-light-only" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="theme-dark-only" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="view-start" class="view"></section>
+  <section id="view-lesson" class="view" hidden></section>
+  <section id="view-complete" class="view" hidden></section>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="confetti" aria-hidden="true"></div>
+
+<script>
+/* ============================================================
+   1. COURSE CONTENT
+   The live course is loaded from /api/course and managed entirely
+   through the admin panel (admin.html) — you do NOT edit lessons here.
+   This DEFAULT_COURSE is only the offline / first-run fallback, shown
+   when the API isn't reachable (opening the file directly, or before
+   the database has any content).
+
+   Lesson shape:
+     id          stable unique string (stores each learner's progress)
+     title       lesson name
+     description plain text (a blank line starts a new paragraph)
+     video       a Vimeo, YouTube, or direct .mp4/.webm link (auto-detected)
+     thumbnail   optional image URL (Vimeo thumbnails fill in automatically)
+     resources[] { label, url, type }   type: prompt|document|reference|link
+   ============================================================ */
+const DEFAULT_COURSE = {
+  name: "Digital Business Bootcamp",
+  tagline: "A guided, video-first path to launching and growing a modern digital business — one lesson at a time.",
+  videos: [
+    {
+      id: "lesson-idea",
+      title: "Finding Your Digital Business Idea",
+      description:
+        "<p>Every digital business starts with a <strong>clear, validated idea</strong>. In this opening lesson you'll learn how to spot real problems people pay to solve, size up a niche, and pressure-test your concept before you build anything.</p>" +
+        "<p>By the end you'll have a one-line business idea and a short list of your first potential customers.</p>",
+      video: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",   // YouTube demo — paste your own YouTube link
+      resources: [
+        { label: "Idea Validation Prompt", url: "https://example.com/idea-prompt", type: "prompt" },
+        { label: "Niche Research Worksheet", url: "https://example.com/niche-worksheet", type: "document" },
+        { label: "Market Sizing Guide", url: "https://example.com/market-sizing", type: "reference" },
+        { label: "Competitor Scan Tool", url: "https://example.com/competitor-tool", type: "link" }
+      ]
+    },
+    {
+      id: "lesson-presence",
+      title: "Building Your Online Presence",
+      description:
+        "<p>Now that you have an idea, it's time to <strong>show up online</strong>. This lesson covers your brand basics, a simple high-converting landing page, and the handful of tools you actually need to start.</p>" +
+        "<p>You'll set up the foundation customers will discover and trust.</p>",
+      video: "https://vimeo.com/76979871",   // Vimeo demo — paste your own Vimeo link
+      resources: [
+        { label: "Landing Page Copy Prompt", url: "https://example.com/landing-prompt", type: "prompt" },
+        { label: "Brand Starter Kit", url: "https://example.com/brand-kit", type: "document" },
+        { label: "Recommended Tool Stack", url: "https://example.com/tool-stack", type: "reference" }
+      ]
+    },
+    {
+      id: "lesson-marketing",
+      title: "Marketing & Customer Acquisition",
+      description:
+        "<p>A great offer is invisible without traffic. Here you'll learn <strong>how to get your first customers</strong> through organic content, simple paid ads, and a repeatable outreach routine.</p>" +
+        "<p>You'll leave with a 7-day content and outreach plan you can run immediately.</p>",
+      video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",   // direct MP4 demo
+      resources: [
+        { label: "Content Calendar Prompt", url: "https://example.com/content-prompt", type: "prompt" },
+        { label: "Cold Outreach Templates", url: "https://example.com/outreach-templates", type: "document" },
+        { label: "Ads Starter Checklist", url: "https://example.com/ads-checklist", type: "reference" },
+        { label: "Analytics Dashboard", url: "https://example.com/analytics", type: "link" }
+      ]
+    },
+    {
+      id: "lesson-scale",
+      title: "Scaling & Automating Your Business",
+      description:
+        "<p>With customers coming in, the final lesson is about <strong>working less while growing more</strong>. You'll map your repeatable processes, automate the busywork, and plan your next 90 days.</p>" +
+        "<p>Finish this and you'll have a lean, scalable system for your digital business.</p>",
+      video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",   // direct MP4 demo
+      resources: [
+        { label: "Automation Blueprint Prompt", url: "https://example.com/automation-prompt", type: "prompt" },
+        { label: "90-Day Growth Plan", url: "https://example.com/growth-plan", type: "document" },
+        { label: "SOP Library", url: "https://example.com/sop-library", type: "reference" }
+      ]
+    }
+  ]
+};
+let COURSE = DEFAULT_COURSE;        // replaced by live data from /api/course on load
+
+/* How much of the video must be genuinely watched (0–1) to auto-complete.
+   Coverage is tracked across the timeline, so skipping ahead does NOT count. */
+const COMPLETE_AT = 0.9;
+
+/* ============================================================
+   2. STATE + PERSISTENCE (per-learner, saved in the browser)
+   ============================================================ */
+let VIDEOS = COURSE.videos;
+const PROGRESS_KEY = "dbb_progress_v1";
+const THEME_KEY = "dbb_theme";
+const coverage = {};               // in-session watch coverage per lesson id
+let buildSeq = 0;                  // invalidates async player builds across navigation
+let activeVideo = null, activeYTPlayer = null, activeYTPoll = null, activeVimeo = null;
+
+function loadProgress(){
+  try{ return JSON.parse(localStorage.getItem(PROGRESS_KEY)) || { completed:{} }; }
+  catch(e){ return { completed:{} }; }
+}
+let progress = loadProgress();
+if(!progress.completed) progress.completed = {};
+
+function saveProgress(){
+  try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); }catch(e){}
+}
+function isCompleted(id){ return !!progress.completed[id]; }
+function markCompleted(id){                 // permanent — never un-set
+  if(!progress.completed[id]){ progress.completed[id] = true; saveProgress(); }
+}
+function completedCount(){ return VIDEOS.filter(v=>isCompleted(v.id)).length; }
+function allCompleted(){ return VIDEOS.length>0 && VIDEOS.every(v=>isCompleted(v.id)); }
+function isUnlocked(i){ return i===0 || isCompleted(VIDEOS[i-1].id); }
+function furthestUnlocked(){                 // first not-yet-completed lesson (which is the one to resume)
+  let i=0; while(i<VIDEOS.length && isCompleted(VIDEOS[i].id)) i++;
+  return Math.min(i, VIDEOS.length-1);
+}
+
+/* ============================================================
+   3. ICONS + POSTER
+   ============================================================ */
+const I = {
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="11" width="15" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5Z"/></svg>',
+  playO:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3V9Z" fill="currentColor" stroke="none"/></svg>',
+  arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>',
+  ext:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg>',
+  prompt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7l4 5-4 5M12 17h7"/></svg>',
+  document:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg>',
+  reference:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2V5Z"/><path d="M8 3v16"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6M10.5 6.5l1-1a4 4 0 0 1 6 6l-1 1M13.5 17.5l-1 1a4 4 0 0 1-6-6l1-1"/></svg>',
+  trophy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a4 4 0 0 1-4 4M7 5H4v2a4 4 0 0 0 4 4"/></svg>'
+};
+const GRADS = [["#1e3a8a","#2563eb"],["#1d4ed8","#0ea5e9"],["#1e40af","#3b82f6"],["#0c4a6e","#38bdf8"],["#312e81","#2563eb"],["#075985","#0ea5e9"]];
+function poster(topText, bigText, i){
+  const g = GRADS[i % GRADS.length];
+  const svg =
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'>"+
+      "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>"+
+        "<stop offset='0' stop-color='"+g[0]+"'/><stop offset='1' stop-color='"+g[1]+"'/></linearGradient></defs>"+
+      "<rect width='1280' height='720' fill='url(#g)'/>"+
+      "<circle cx='1130' cy='110' r='230' fill='#ffffff' opacity='0.06'/>"+
+      "<circle cx='170' cy='640' r='270' fill='#ffffff' opacity='0.05'/>"+
+      "<text x='70' y='150' font-family='Space Grotesk, Arial, sans-serif' font-size='30' fill='#ffffff' opacity='0.85' letter-spacing='4'>"+topText+"</text>"+
+      "<circle cx='640' cy='352' r='92' fill='#ffffff' opacity='0.18'/>"+
+      "<circle cx='640' cy='352' r='64' fill='#ffffff'/>"+
+      "<path d='M623 318 L623 386 L682 352 Z' fill='"+g[0]+"'/>"+
+      "<text x='70' y='655' font-family='Space Grotesk, Arial, sans-serif' font-weight='700' font-size='52' fill='#ffffff'>"+bigText+"</text>"+
+    "</svg>";
+  return "data:image/svg+xml," + encodeURIComponent(svg);
+}
+
+/* ---- escape user text, render plain-text descriptions, resolve thumbnails ---- */
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function renderDescription(text){
+  const s = String(text==null?"":text);
+  if(/<[a-z][\s\S]*>/i.test(s)) return s;                 // already HTML (legacy / fallback)
+  const paras = s.split(/\n{2,}/).map(function(p){ return p.trim(); }).filter(Boolean);
+  if(!paras.length) return "";
+  return paras.map(function(p){ return "<p>"+esc(p).replace(/\n/g,"<br>")+"</p>"; }).join("");
+}
+function thumbUrl(v, i){
+  if(v && v.thumbnail) return v.thumbnail;
+  const s = parseVideo(v ? v.video : "");
+  if(s.type === "youtube") return "https://img.youtube.com/vi/"+s.id+"/hqdefault.jpg";
+  return poster("LESSON "+(i+1), "0"+(i+1), i);           // generated SVG fallback
+}
+
+/* ============================================================
+   4. ROUTER
+   ============================================================ */
+const elStart = document.getElementById("view-start");
+const elLesson = document.getElementById("view-lesson");
+const elComplete = document.getElementById("view-complete");
+
+function go(hash){ if(("#"+hash)===location.hash){ render(); } else { location.hash = hash; } }
+function goReplace(hash){ history.replaceState(null,"","#"+hash); render(); }
+
+function render(){
+  teardownPlayer();                 // stop any player from the previous view
+  buildSeq++;                       // start a new build generation
+  const h = (location.hash || "").replace(/^#/,"") || "start";
+  if(h === "start") return showStart();
+  if(h === "complete") return showComplete();
+  if(h.indexOf("lesson-") === 0 && /^lesson-\d+$/.test(h)){
+    return openLesson(parseInt(h.split("-")[1],10) - 1);
+  }
+  return goReplace("start");
+}
+window.addEventListener("hashchange", render);
+
+/* ============================================================
+   5. HEADER
+   ============================================================ */
+function refreshHeader(){
+  const done = completedCount(), total = VIDEOS.length;
+  document.getElementById("hp-done").textContent = done;
+  document.getElementById("hp-total").textContent = total;
+  document.getElementById("hp-fill").style.width = (total ? (done/total*100) : 0) + "%";
+}
+
+/* ============================================================
+   6. START VIEW
+   ============================================================ */
+function showStart(){
+  showView(elStart);
+  const done = completedCount(), total = VIDEOS.length;
+  let ctaLabel, ctaTarget, extra = "";
+  if(done === 0){ ctaLabel = "Start learning"; ctaTarget = "lesson-1"; }
+  else if(done < total){ ctaLabel = "Resume learning"; ctaTarget = "lesson-" + (furthestUnlocked()+1); }
+  else { ctaLabel = "Review lessons"; ctaTarget = "lesson-1";
+    extra = '<a class="btn btn-ghost" href="#complete">'+I.trophy+' View completion</a>'; }
+
+  const heroPoster = poster((COURSE.name||"BOOTCAMP").toUpperCase(), VIDEOS.length + " video lessons", 0);
+  const doneBadge = (done===total && total>0)
+    ? '<span class="badge-done">'+I.check+' Course completed</span>' : '';
+
+  elStart.innerHTML =
+    '<div class="hero">'+
+      '<div class="hero-copy">'+
+        '<span class="eyebrow">'+I.play+' Step-by-step video course</span>'+
+        '<h1>'+esc(COURSE.name)+'</h1>'+
+        '<p class="lede">'+esc(COURSE.tagline)+'</p>'+
+        '<div class="hero-meta">'+
+          '<div class="m"><b>'+total+'</b><span>LESSONS</span></div>'+
+          '<div class="m"><b>'+done+'/'+total+'</b><span>COMPLETED</span></div>'+
+          '<div class="m"><b>'+(total? Math.round(done/total*100):0)+'%</b><span>PROGRESS</span></div>'+
+        '</div>'+
+        '<div class="cta-row">'+
+          '<button class="btn btn-primary" id="start-cta">'+ctaLabel+' '+I.arrow+'</button>'+
+          extra+
+          doneBadge+
+        '</div>'+
+      '</div>'+
+      '<button class="thumb hero-order-thumb" id="hero-thumb" aria-label="'+ctaLabel+'">'+
+        '<img src="'+heroPoster+'" alt="Course preview thumbnail">'+
+        '<span class="play-badge"><i>'+I.play+'</i></span>'+
+      '</button>'+
+    '</div>'+
+    '<div class="curriculum">'+
+      '<div class="section-h"><h2>Course curriculum</h2><span>Complete each lesson to unlock the next</span></div>'+
+      '<div class="lesson-cards">'+ VIDEOS.map(startCard).join("") +'</div>'+
+    '</div>';
+
+  document.getElementById("start-cta").onclick = ()=> go(ctaTarget);
+  document.getElementById("hero-thumb").onclick = ()=> go(ctaTarget);
+  elStart.querySelectorAll("[data-goto]").forEach(c=>{
+    c.onclick = ()=>{ if(c.dataset.locked==="1"){ toast("Finish the previous lesson to unlock this one."); return; } go("lesson-"+(parseInt(c.dataset.goto,10)+1)); };
+  });
+  refreshHeader();
+  window.scrollTo(0,0);
+}
+function startCard(v, i){
+  const done = isCompleted(v.id), unlocked = isUnlocked(i), locked = !unlocked;
+  const state = done
+    ? '<span class="lcard-state done">'+I.check+'</span>'
+    : (locked ? '<span class="lcard-state">'+I.lock+'</span>' : '<span class="lcard-state">'+I.playO+'</span>');
+  const plain = esc(String(v.description||"").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim());
+  return '<button class="lcard'+(locked?' locked':'')+'" data-goto="'+i+'" data-locked="'+(locked?1:0)+'">'+
+      '<div class="lcard-thumb"><img src="'+thumbUrl(v, i)+'" alt="" loading="lazy">'+
+        '<span class="lcard-tag">LESSON '+(i+1)+'</span>'+ state +'</div>'+
+      '<div class="lcard-body"><h3>'+esc(v.title)+'</h3><p>'+plain+'</p></div>'+
+    '</button>';
+}
+
+/* ============================================================
+   7. LESSON VIEW
+   ============================================================ */
+function openLesson(index){
+  if(isNaN(index) || index<0 || index>=VIDEOS.length) return goReplace("start");
+  if(!isUnlocked(index)) return goReplace("lesson-"+(furthestUnlocked()+1));
+
+  showView(elLesson);
+  const v = VIDEOS[index];
+  elLesson.innerHTML =
+    '<div class="crumb">'+
+      '<button id="crumb-home">'+I.back+' All lessons</button>'+
+      '<span class="sep">/</span>'+
+      '<span class="cur">Lesson '+(index+1)+' of '+VIDEOS.length+'</span>'+
+    '</div>'+
+    '<div class="lesson-layout">'+
+      '<aside class="rail" id="rail"></aside>'+
+      '<div class="lesson-main">'+
+        '<div class="player-shell" id="player-shell"></div>'+
+        '<div class="lesson-head">'+
+          '<div class="lesson-kicker">Lesson '+(index+1)+'</div>'+
+          '<h1>'+esc(v.title)+'</h1>'+
+        '</div>'+
+        '<div class="panel"><div class="panel-label">About this lesson</div>'+renderDescription(v.description)+'</div>'+
+        resourcesPanel(v)+
+        '<div class="completion" id="completion"></div>'+
+        '<div class="lesson-nav">'+
+          (index>0 ? '<button class="btn btn-ghost" id="btn-prev">'+I.back+' Previous</button>' : '')+
+          '<span class="spacer"></span>'+
+          '<span class="next-hint" id="next-hint" hidden>'+I.lock+' Watch the full video to unlock</span>'+
+          '<button class="btn btn-primary" id="btn-next"></button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+  renderRail(index);
+  wireLesson(v, index);
+  refreshHeader();
+  window.scrollTo(0,0);
+}
+
+function resourcesPanel(v){
+  if(!v.resources || !v.resources.length) return "";
+  const typeName = {prompt:"Prompt", document:"Document", reference:"Reference", link:"Link"};
+  const items = v.resources.map(function(r){
+    const t = r.type || "link";
+    return '<a class="res" href="'+esc(r.url)+'" target="_blank" rel="noopener noreferrer">'+
+        '<span class="res-ico res-'+t+'">'+(I[t]||I.link)+'</span>'+
+        '<span class="res-body"><span class="res-label">'+esc(r.label)+'</span><span class="res-type">'+(typeName[t]||"Link")+'</span></span>'+
+        '<span class="res-ext">'+I.ext+'</span>'+
+      '</a>';
+  }).join("");
+  return '<div class="panel"><div class="panel-label">Resources &amp; materials</div><div class="res-grid">'+items+'</div></div>';
+}
+
+function renderRail(active){
+  const rail = document.getElementById("rail"); if(!rail) return;
+  const done = completedCount();
+  let html = '<div class="rail-h"><div class="t">Your lessons</div><div class="s">'+done+' of '+VIDEOS.length+' completed</div></div><div class="rail-list">';
+  VIDEOS.forEach(function(v,i){
+    const isDone = isCompleted(v.id), unlocked = isUnlocked(i), locked = !unlocked, isActive = i===active;
+    let badge, cls="ri-badge";
+    if(isDone){ cls+=" done"; badge=I.check; }
+    else if(isActive){ cls+=" active"; badge=(i+1); }
+    else if(locked){ cls+=" locked"; badge=I.lock; }
+    else badge=(i+1);
+    const sub = isDone ? "Completed" : (locked ? "Locked" : (isActive ? "In progress" : "Unlocked"));
+    html += '<button class="rail-item'+(isActive?" active":"")+(locked?" locked":"")+'" data-i="'+i+'" data-locked="'+(locked?1:0)+'">'+
+        '<span class="'+cls+'">'+badge+'</span>'+
+        '<span class="ri-main"><span class="ri-title">'+esc(v.title)+'</span><span class="ri-sub">'+sub+'</span></span>'+
+      '</button>';
+  });
+  html += '</div>';
+  rail.innerHTML = html;
+  rail.querySelectorAll(".rail-item").forEach(function(b){
+    b.onclick = function(){
+      if(b.dataset.locked==="1"){ toast("Finish the previous lesson to unlock this one."); return; }
+      go("lesson-"+(parseInt(b.dataset.i,10)+1));
+    };
+  });
+}
+
+/* ---- video source detection: paste a YouTube link, a Vimeo link, an MP4 URL,
+        or a bare id — it figures out the right player ---- */
+function parseVideo(v){
+  if(v && typeof v === "object" && v.type) return v;                 // explicit {type,...}
+  const s = String(v || "").trim();
+  let m = s.match(/(?:youtube\.com\/(?:watch\?.*?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/);
+  if(m) return { type:"youtube", id:m[1] };
+  if(/youtube\.com/.test(s)){ try{ const id=new URL(s).searchParams.get("v"); if(id) return {type:"youtube",id}; }catch(e){} }
+  m = s.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([A-Za-z0-9]+))?/);  // supports unlisted .../hash
+  if(m) return { type:"vimeo", id:m[1], hash:m[2]||null };
+  if(/^\d+$/.test(s)) return { type:"vimeo", id:s, hash:null };       // bare numeric id → Vimeo
+  if(/^[A-Za-z0-9_-]{11}$/.test(s)) return { type:"youtube", id:s };  // bare 11-char id → YouTube
+  return { type:"mp4", src:s };
+}
+
+/* ---- load the embed APIs once, on demand ---- */
+let _ytPromise, _vimeoPromise;
+function loadYT(){
+  if(_ytPromise) return _ytPromise;
+  _ytPromise = new Promise(function(resolve){
+    if(window.YT && window.YT.Player) return resolve(window.YT);
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = function(){ if(prev) try{prev();}catch(e){} resolve(window.YT); };
+    const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(s);
+  });
+  return _ytPromise;
+}
+function loadVimeo(){
+  if(_vimeoPromise) return _vimeoPromise;
+  _vimeoPromise = new Promise(function(resolve, reject){
+    if(window.Vimeo && window.Vimeo.Player) return resolve(window.Vimeo);
+    const s = document.createElement("script"); s.src = "https://player.vimeo.com/api/player.js";
+    s.onload = function(){ resolve(window.Vimeo); }; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  return _vimeoPromise;
+}
+
+/* ---- one watch-coverage tracker, shared by all player types.
+        Coverage is filled only across continuous playback, so seeking/skipping
+        never counts — a lesson completes only when the whole timeline is watched. ---- */
+function makeTracker(v, index){
+  const B = 120;
+  let st = coverage[v.id] || (coverage[v.id] = { buckets:new Uint8Array(B), covered:0, frac:0 });
+  let lastT = null;
+  return {
+    reset(){ lastT = null; },                     // call on a seek
+    seed(t){ lastT = (typeof t === "number") ? t : null; },   // call on play/resume
+    sample(t, d){
+      if(!d || !isFinite(d) || d <= 0 || typeof t !== "number") return;
+      if(lastT != null && t > lastT && (t - lastT) < 2.5){     // continuous playback only
+        let a = Math.max(0, Math.floor(lastT / d * B));
+        let b = Math.min(B - 1, Math.floor(t / d * B));
+        for(let i=a;i<=b;i++){ if(!st.buckets[i]){ st.buckets[i]=1; st.covered++; } }
+      }
+      lastT = t;
+      st.frac = st.covered / B;
+      if(!isCompleted(v.id)){
+        updateCoverageBar(st.frac);
+        if(st.frac >= COMPLETE_AT) onLessonComplete(v, index);
+      }
+    },
+    ended(){ if(!isCompleted(v.id) && (st.frac >= COMPLETE_AT * 0.9)) onLessonComplete(v, index); }
+  };
+}
+
+/* ---- stop + release whatever player was active (called on every view change) ---- */
+function teardownPlayer(){
+  try{ if(activeYTPoll){ clearInterval(activeYTPoll); activeYTPoll = null; } }catch(e){}
+  try{ if(activeYTPlayer && activeYTPlayer.destroy) activeYTPlayer.destroy(); }catch(e){}
+  activeYTPlayer = null;
+  try{ if(activeVimeo && activeVimeo.unload) activeVimeo.unload(); }catch(e){}
+  try{ if(activeVimeo && activeVimeo.destroy) activeVimeo.destroy(); }catch(e){}
+  activeVimeo = null;
+  try{ if(activeVideo && activeVideo.pause) activeVideo.pause(); }catch(e){}
+  activeVideo = null;
+}
+function playerLoadError(){ const l = document.getElementById("pl-load"); if(l){ l.classList.remove("player-loading"); l.style.cssText="position:absolute;inset:0;display:grid;place-items:center;color:#aebbd6;font-size:13.5px;text-align:center;padding:16px;background:#05070f"; l.textContent = "This video could not be loaded. Check the link, or that embedding is allowed."; } }
+
+function wireLesson(v, index){
+  const homeBtn = document.getElementById("crumb-home");
+  if(homeBtn) homeBtn.onclick = ()=> go("start");
+  const prev = document.getElementById("btn-prev");
+  if(prev) prev.onclick = ()=> go("lesson-"+index);   // previous lesson number = index
+
+  const doneAlready = isCompleted(v.id);
+  updateCompletionUI(v, index, doneAlready ? 1 : ((coverage[v.id] && coverage[v.id].frac) || 0));
+  setNextState(index, doneAlready);
+
+  const shell = document.getElementById("player-shell");
+  if(!shell) return;
+  const src = parseVideo(v.video);
+  const tracker = makeTracker(v, index);
+  const myBuild = buildSeq;                           // abort async build if the user navigated away
+
+  /* --- direct MP4 / webm --- */
+  if(src.type === "mp4"){
+    shell.innerHTML = '<video id="player" controls playsinline preload="metadata" poster="'+
+      poster("LESSON "+(index+1), "0"+(index+1), index)+'"><source src="'+src.src+'">'+
+      'Your browser does not support the video tag.</video>';
+    const video = document.getElementById("player");
+    activeVideo = video;
+    video.addEventListener("seeking", ()=> tracker.reset());
+    video.addEventListener("play",    ()=> tracker.seed(video.currentTime));
+    video.addEventListener("timeupdate", ()=> tracker.sample(video.currentTime, video.duration));
+    video.addEventListener("ended",   ()=> tracker.ended());
+    return;
+  }
+
+  /* --- YouTube --- */
+  if(src.type === "youtube"){
+    shell.innerHTML = '<div id="yt-host"></div><div class="player-loading" id="pl-load">Loading video</div>';
+    loadYT().then(function(YT){
+      if(myBuild !== buildSeq || !document.getElementById("yt-host")) return;
+      activeYTPlayer = new YT.Player("yt-host", {
+        videoId: src.id,
+        playerVars:{ rel:0, modestbranding:1, playsinline:1, origin: location.origin },
+        events:{
+          onReady: function(){ const l=document.getElementById("pl-load"); if(l) l.remove(); },
+          onError: function(){ playerLoadError(); },
+          onStateChange: function(e){
+            if(e.data === YT.PlayerState.PLAYING){
+              try{ tracker.seed(activeYTPlayer.getCurrentTime()); }catch(err){}
+              if(!activeYTPoll){
+                activeYTPoll = setInterval(function(){
+                  try{
+                    if(activeYTPlayer && activeYTPlayer.getPlayerState() === YT.PlayerState.PLAYING){
+                      tracker.sample(activeYTPlayer.getCurrentTime(), activeYTPlayer.getDuration());
+                    }
+                  }catch(err){}
+                }, 400);
+              }
+            } else if(e.data === YT.PlayerState.ENDED){
+              try{ tracker.sample(activeYTPlayer.getDuration(), activeYTPlayer.getDuration()); }catch(err){}
+              tracker.ended();
+            }
+          }
+        }
+      });
+    }).catch(playerLoadError);
+    return;
+  }
+
+  /* --- Vimeo --- */
+  if(src.type === "vimeo"){
+    shell.innerHTML = '<div id="vimeo-host"></div><div class="player-loading" id="pl-load">Loading video</div>';
+    loadVimeo().then(function(Vimeo){
+      if(myBuild !== buildSeq || !document.getElementById("vimeo-host")) return;
+      const url = "https://vimeo.com/" + src.id + (src.hash ? ("/" + src.hash) : "");
+      const p = new Vimeo.Player("vimeo-host", { url:url, responsive:true });
+      activeVimeo = p;
+      p.ready().then(function(){ const l=document.getElementById("pl-load"); if(l) l.remove(); }).catch(playerLoadError);
+      p.on("play",       function(){ p.getCurrentTime().then(function(t){ tracker.seed(t); }); });
+      p.on("seeked",     function(){ tracker.reset(); });
+      p.on("timeupdate", function(e){ tracker.sample(e.seconds, e.duration); });
+      p.on("ended",      function(){ tracker.ended(); });
+    }).catch(playerLoadError);
+    return;
+  }
+}
+
+function setNextState(index, enabled){
+  const next = document.getElementById("btn-next");
+  const hint = document.getElementById("next-hint");
+  if(!next) return;
+  const last = index === VIDEOS.length-1;
+  next.innerHTML = (last ? "Finish bootcamp " : "Next lesson ") + I.arrow;
+  next.classList.toggle("is-disabled", !enabled);
+  next.setAttribute("aria-disabled", enabled ? "false" : "true");
+  if(hint) hint.hidden = enabled;
+  next.onclick = enabled ? (()=> go(last ? "complete" : "lesson-"+(index+2))) : null;
+}
+
+function updateCompletionUI(v, index, frac){
+  const card = document.getElementById("completion"); if(!card) return;
+  if(isCompleted(v.id)){
+    card.className = "completion is-done";
+    card.innerHTML =
+      '<div class="comp-ico">'+I.check+'</div>'+
+      '<div class="comp-body"><div class="comp-title">Lesson completed</div>'+
+      '<div class="comp-sub">Nicely done — this stays saved permanently. You can rewatch anytime without losing your progress.</div></div>';
+  } else {
+    const pct = Math.round(frac*100);
+    card.className = "completion";
+    card.innerHTML =
+      '<div class="comp-ico">'+I.playO+'</div>'+
+      '<div class="comp-body">'+
+        '<div class="comp-title">Keep watching to complete</div>'+
+        '<div class="comp-sub">Watch the full video and this lesson is marked complete automatically, unlocking the next one.</div>'+
+        '<div class="cov"><div class="cov-track"><div class="cov-bar" id="cov-bar" style="width:'+pct+'%"></div></div><span class="cov-pct" id="cov-pct">'+pct+'%</span></div>'+
+      '</div>';
+  }
+}
+function updateCoverageBar(frac){
+  const bar = document.getElementById("cov-bar"), pct = document.getElementById("cov-pct");
+  const p = Math.min(100, Math.round(frac*100));
+  if(bar) bar.style.width = p + "%";
+  if(pct) pct.textContent = p + "%";
+}
+
+function onLessonComplete(v, index){
+  if(isCompleted(v.id)) return;
+  markCompleted(v.id);
+  refreshHeader();
+  renderRail(index);
+  updateCompletionUI(v, index, 1);
+  setNextState(index, true);
+  const last = index === VIDEOS.length-1;
+  if(last){
+    toast("Bootcamp complete! Taking you to your completion page…");
+    setTimeout(function(){ if(location.hash === "#lesson-"+(index+1)) go("complete"); }, 2600);
+  } else {
+    toast("Lesson completed — the next lesson is unlocked.");
+  }
+}
+
+/* ============================================================
+   8. COMPLETE VIEW
+   ============================================================ */
+function showComplete(){
+  if(!allCompleted()) return goReplace("lesson-"+(furthestUnlocked()+1));
+  showView(elComplete);
+  const rows = VIDEOS.map(function(v,i){
+    return '<div class="cert-row">'+I.check+'<span>Lesson '+(i+1)+': '+esc(v.title)+'</span></div>';
+  }).join("");
+  elComplete.innerHTML =
+    '<div class="complete-wrap">'+
+      '<div class="seal">'+I.trophy+'</div>'+
+      '<span class="eyebrow">Course complete</span>'+
+      '<h1>Congratulations!</h1>'+
+      '<p class="msg">You have successfully completed the Digital Business Bootcamp.</p>'+
+      '<div class="cert">'+
+        '<div class="cert-top"><span class="ct-l">'+esc(COURSE.name)+'</span><span class="ct-r">'+VIDEOS.length+' of '+VIDEOS.length+' lessons completed</span></div>'+
+        '<div class="cert-list">'+rows+'</div>'+
+      '</div>'+
+      '<div class="complete-cta">'+
+        '<button class="btn btn-primary" id="c-review">Review lessons '+I.arrow+'</button>'+
+        '<button class="btn btn-ghost" id="c-home">'+I.back+' Back to start</button>'+
+      '</div>'+
+    '</div>';
+  document.getElementById("c-review").onclick = ()=> go("lesson-1");
+  document.getElementById("c-home").onclick = ()=> go("start");
+  refreshHeader();
+  window.scrollTo(0,0);
+  celebrate();
+}
+
+/* ============================================================
+   9. HELPERS: view switch, toast, confetti, theme
+   ============================================================ */
+function showView(el){
+  [elStart, elLesson, elComplete].forEach(s=>{ s.hidden = (s!==el); });
+}
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove("show"), 3200);
+}
+function celebrate(){
+  try{
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const c = document.getElementById("confetti"); if(!c) return;
+    const colors = ["#2563eb","#3b82f6","#0ea5e9","#60a5fa","#1d4ed8","#38bdf8","#93c5fd"];
+    for(let i=0;i<54;i++){
+      const p = document.createElement("i");
+      p.style.left = Math.random()*100+"%";
+      p.style.background = colors[i%colors.length];
+      p.style.animationDelay = (Math.random()*0.7)+"s";
+      p.style.animationDuration = (2.4+Math.random()*1.8)+"s";
+      p.style.opacity = 0.75+Math.random()*0.25;
+      c.appendChild(p);
+    }
+    setTimeout(()=>{ c.innerHTML=""; }, 5200);
+  }catch(e){}
+}
+
+/* theme */
+(function initTheme(){
+  let saved=null; try{ saved = localStorage.getItem(THEME_KEY); }catch(e){}
+  if(saved==="dark" || saved==="light") document.documentElement.setAttribute("data-theme", saved);
+})();
+document.getElementById("theme-btn").onclick = function(){
+  const root = document.documentElement;
+  const isDark = root.getAttribute("data-theme")==="dark" ||
+    (!root.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+  const next = isDark ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+};
+document.getElementById("brand-btn").onclick = ()=> go("start");
+
+/* ============================================================
+   10. LOAD LIVE CONTENT + BOOT
+   ============================================================ */
+function applyBranding(){
+  try{
+    document.title = COURSE.name || "Bootcamp";
+    const bn = document.querySelector(".brand-name"); if(bn) bn.textContent = COURSE.name || "Bootcamp";
+  }catch(e){}
+}
+async function loadCourse(){
+  try{
+    const r = await fetch("/api/course", { cache:"no-store" });
+    if(r.ok){
+      const data = await r.json();
+      if(data && Array.isArray(data.videos) && data.videos.length){
+        COURSE = data; VIDEOS = COURSE.videos;
+      }
+    }
+  }catch(e){ /* offline or opened as a file → keep DEFAULT_COURSE */ }
+}
+(async function boot(){
+  await loadCourse();
+  applyBranding();
+  refreshHeader();
+  render();
+})();
+</script>
+</body>
+</html>
